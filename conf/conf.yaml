@@ -1,0 +1,10 @@
+server:
+  addr: 127.0.0.1:10010
+  keep_alive: true
+log:
+  level: debug
+  filename: app.log
+  max_size: 100
+  max_age: 30
+  max_backups: 10
+  compress: false
