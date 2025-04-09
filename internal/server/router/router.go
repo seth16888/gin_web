@@ -14,6 +14,7 @@ import (
 )
 
 func NewRouter(log *zap.Logger) http.Handler {
+	gin.DisableConsoleColor()
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 
