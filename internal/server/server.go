@@ -21,11 +21,15 @@ type Server struct {
 }
 
 type ServerConf struct {
-	Addr      string `yaml:"addr"`
-	SSLCert   string `yaml:"ssl_cert"`
-	SSLKey    string `yaml:"ssl_key"`
-	SSLAddr   string `yaml:"ssl_addr"`
-	KeepAlive bool   `yaml:"keep_alive"`
+	Addr           string        `yaml:"addr"`
+	SSLCert        string        `yaml:"ssl_cert"`
+	SSLKey         string        `yaml:"ssl_key"`
+	SSLAddr        string        `yaml:"ssl_addr"`
+	KeepAlive      bool          `yaml:"keep_alive"`
+	ReadTimeout    time.Duration `yaml:"read_timeout"`
+	WriteTimeout   time.Duration `yaml:"write_timeout"`
+	IdleTimeout    time.Duration `yaml:"idle_timeout"`
+	MaxHeaderBytes int           `yaml:"max_header_bytes"`
 }
 
 func NewServer(conf *ServerConf, log *zap.Logger, handler http.Handler) *Server {
@@ -69,26 +73,28 @@ func (s *Server) Shutdown() {
 func (s *Server) init() error {
 	s.log.Info("Initialize Http API Server")
 
-	//http
+	// http
 	s.Http = &http.Server{
 		Addr:           s.conf.Addr,
 		Handler:        s.Handler,
-		ReadTimeout:    5 * time.Second,
-		WriteTimeout:   5 * time.Second,
-		MaxHeaderBytes: 1 << 20,
+		ReadTimeout:    s.conf.ReadTimeout,
+		WriteTimeout:   s.conf.WriteTimeout,
+		IdleTimeout:    s.conf.IdleTimeout,
+		MaxHeaderBytes: s.conf.MaxHeaderBytes,
 	}
 	s.Http.SetKeepAlivesEnabled(s.conf.KeepAlive)
 
-	//https
+	// https
 	if s.conf.SSLCert != "" && s.conf.SSLKey != "" {
 		s.Https = &http.Server{
 			Addr:           s.conf.SSLAddr,
 			Handler:        s.Handler,
-			ReadTimeout:    5 * time.Second,
-			WriteTimeout:   5 * time.Second,
-			MaxHeaderBytes: 1 << 20,
+      ReadTimeout:    s.conf.ReadTimeout,
+      WriteTimeout:   s.conf.WriteTimeout,
+      IdleTimeout:    s.conf.IdleTimeout,
+      MaxHeaderBytes: s.conf.MaxHeaderBytes,
 			TLSConfig: &tls.Config{
-				//优先使用服务器端的cipherSuite密码套件，确保安全
+				// 优先使用服务器端的cipherSuite密码套件，确保安全
 				PreferServerCipherSuites: true,
 			},
 		}

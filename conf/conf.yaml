@@ -1,5 +1,9 @@
 server:
   addr: 127.0.0.1:10010
+  read_timeout: 5s
+  write_timeout: 5s
+  idle_timeout: 120s
+  max_header_bytes: 1048576
   keep_alive: true
 log:
   level: debug
