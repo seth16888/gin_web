@@ -1,3 +1,5 @@
+// Package di provides dependency injection container functionality for the application.
+// Container is the dependency injection container for the application.
 package di
 
 import (

@@ -1,3 +1,8 @@
+/*
+  package router provides the router for the application
+ 
+  Router is the router for the application
+ */
 package router
 
 import (
