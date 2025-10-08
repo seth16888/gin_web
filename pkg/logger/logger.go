@@ -1,3 +1,4 @@
+// Package logger provides a logger for the application.
 package logger
 
 import (
@@ -10,7 +11,7 @@ import (
 
 var Log *zap.Logger
 
-// 日志配置
+// LogConfig 日志配置
 type LogConfig struct {
 	Level      string `yaml:"level"`
 	Filename   string `yaml:"filename"`
@@ -20,7 +21,7 @@ type LogConfig struct {
 	Compress   bool   `yaml:"compress"`
 }
 
-// 初始化日志
+// InitLogger 初始化日志
 func InitLogger(cfg *LogConfig) *zap.Logger {
 	if cfg == nil {
 		panic("logger config is nil")
@@ -94,7 +95,7 @@ func InitLogger(cfg *LogConfig) *zap.Logger {
 	return logger
 }
 
-// 以下是封装的常用日志方法
+// Debug 以下是封装的常用日志方法
 func Debug(msg string, fields ...zap.Field) {
 	Log.Debug(msg, fields...)
 }
