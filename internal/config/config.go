@@ -33,13 +33,13 @@ func ReadConfigFromFile(file string) *Conf {
 	}()
 
 	if file == "" {
-		file = "conf.yaml"
+		file = "configs/config.yaml"
 	}
 
 	viper.SetConfigFile(file)
 	viper.AddConfigPath(".")
-	viper.AddConfigPath("./conf")
-	viper.AddConfigPath("../conf")
+	viper.AddConfigPath("./configs")
+	viper.AddConfigPath("../configs")
 	viper.AddConfigPath("~")
 
 	viper.SetConfigType("yaml")

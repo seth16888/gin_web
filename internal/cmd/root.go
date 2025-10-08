@@ -19,8 +19,8 @@ var (
 )
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&configFile, "conf", "c",
-		"conf/conf.yaml", "--conf config file (default is conf/conf.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&configFile, "config", "c",
+		"configs/config.yaml", "-c config file (default is configs/config.yaml)")
 }
 
 var rootCmd = &cobra.Command{
