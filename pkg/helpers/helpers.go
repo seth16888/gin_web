@@ -56,7 +56,7 @@ func IsImageFile(fileName string) bool {
 	return slices.Contains(imageExtensions, ext)
 }
 
-// 从 数字 切片中获取最小值，返回错误处理
+// FindMin 从 数字 切片中获取最小值，返回错误处理
 func FindMin[T int](numbers []T) (T, error) {
   if len(numbers) == 0 {
       return 0, errors.New("slice is empty")

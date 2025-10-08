@@ -1,3 +1,4 @@
+// Package server provides an HTTP and HTTPS server with configurable options.
 package server
 
 import (
@@ -14,8 +15,8 @@ type Server struct {
 	conf          *ServerConf
 	log           *zap.Logger
 	Handler       http.Handler
-	Http          *http.Server
-	Https         *http.Server
+	HTTP          *http.Server
+	HTTPS         *http.Server
 	httpListener  net.Listener
 	httpsListener net.Listener
 }
@@ -46,17 +47,17 @@ func (s *Server) Run(errChan chan error) {
 	// start HTTP Server
 	s.log.Info("The Server is listening", zap.String("http", s.conf.Addr))
 	go func() {
-		if err := s.Http.Serve(s.httpListener); err != nil && err != http.ErrServerClosed {
+		if err := s.HTTP.Serve(s.httpListener); err != nil && err != http.ErrServerClosed {
 			errChan <- err
 			return
 		}
 	}()
 
 	// start HTTPS Server
-	if s.conf.SSLCert != "" && s.conf.SSLKey != "" && s.Https != nil {
+	if s.conf.SSLCert != "" && s.conf.SSLKey != "" && s.HTTPS != nil {
 		s.log.Info("The Server is listening on", zap.String("https", s.conf.SSLAddr))
 		go func() {
-			if err := s.Https.ServeTLS(s.httpsListener,
+			if err := s.HTTPS.ServeTLS(s.httpsListener,
 				s.conf.SSLCert, s.conf.SSLKey); err != nil && err != http.ErrServerClosed {
 				errChan <- err
 				return
@@ -66,15 +67,15 @@ func (s *Server) Run(errChan chan error) {
 }
 
 func (s *Server) Shutdown() {
-	s.shutdownServer(s.Http)
-	s.shutdownServer(s.Https)
+	s.shutdownServer(s.HTTP)
+	s.shutdownServer(s.HTTPS)
 }
 
 func (s *Server) init() error {
 	s.log.Info("Initialize Http API Server")
 
 	// http
-	s.Http = &http.Server{
+	s.HTTP = &http.Server{
 		Addr:           s.conf.Addr,
 		Handler:        s.Handler,
 		ReadTimeout:    s.conf.ReadTimeout,
@@ -82,11 +83,11 @@ func (s *Server) init() error {
 		IdleTimeout:    s.conf.IdleTimeout,
 		MaxHeaderBytes: s.conf.MaxHeaderBytes,
 	}
-	s.Http.SetKeepAlivesEnabled(s.conf.KeepAlive)
+	s.HTTP.SetKeepAlivesEnabled(s.conf.KeepAlive)
 
 	// https
 	if s.conf.SSLCert != "" && s.conf.SSLKey != "" {
-		s.Https = &http.Server{
+		s.HTTPS = &http.Server{
 			Addr:           s.conf.SSLAddr,
 			Handler:        s.Handler,
       ReadTimeout:    s.conf.ReadTimeout,
@@ -98,7 +99,7 @@ func (s *Server) init() error {
 				PreferServerCipherSuites: true,
 			},
 		}
-		s.Https.SetKeepAlivesEnabled(s.conf.KeepAlive)
+		s.HTTPS.SetKeepAlivesEnabled(s.conf.KeepAlive)
 	}
 
 	// httpListener

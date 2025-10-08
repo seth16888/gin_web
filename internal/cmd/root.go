@@ -1,3 +1,5 @@
+// Package cmd provides the root command for the coauth OAuth2 server.
+// Usage: coauth [command] [flags] [args]
 package cmd
 
 import (
